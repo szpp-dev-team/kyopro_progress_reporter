@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+
+	"github.com/earlgray283/kyopro_progress_reporter/util"
 )
 
 type Member struct {
@@ -45,6 +47,13 @@ func AddMemberToJSON() error {
 
 	_ = os.Remove("member.json")
 	if err := ioutil.WriteFile("member.json", b, 0666); err != nil {
+		return err
+	}
+
+	if err := util.DownloadFile("member.json"); err != nil {
+		return err
+	}
+	if err := util.DownloadFile("member.json.bk"); err != nil {
 		return err
 	}
 
