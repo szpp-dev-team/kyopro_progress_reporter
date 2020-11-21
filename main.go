@@ -14,6 +14,7 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
+var port string
 var api *slack.Client
 var members *[]Member
 var channelID = "G01FQK55DPA"
@@ -117,7 +118,8 @@ func main() {
 	})
 
 	log.Println("[INFO] Server listening...")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	port = os.Getenv("PORT")
+	if err := http.ListenAndServe("0.0.0.0:"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 
