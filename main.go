@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
+	"github.com/joho/godotenv"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -22,15 +23,9 @@ var channelID = "G01FQK55DPA"
 func main() {
 	var err error
 
-	/*
-		path, err := filepath.Abs(".env")
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := godotenv.Load(path); err != nil {
-			log.Fatal(err)
-		}
-	*/
+	if err := godotenv.Load(".env"); err != nil {
+		log.Println("not found .env file")
+	}
 
 	api = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
 	if err := util.DownloadFile("members.json"); err != nil {
