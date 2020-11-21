@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
-	"github.com/joho/godotenv"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -20,11 +19,18 @@ var members *[]Member
 var channelID = "G01FQK55DPA"
 
 func main() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err)
-	}
-
 	var err error
+
+	/*
+		path, err := filepath.Abs(".env")
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := godotenv.Load(path); err != nil {
+			log.Fatal(err)
+		}
+	*/
+
 	api = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
 	if err := util.DownloadFile("members.json"); err != nil {
 		log.Fatal(err)
