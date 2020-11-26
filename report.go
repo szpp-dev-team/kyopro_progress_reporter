@@ -34,7 +34,7 @@ func reportSubmissions() error {
 
 		msg := fmt.Sprintf("%s ~ %s にかけての AC 数ランキングを発表するっぴ！\n\n", sinceDay, untilDay)
 		for rank, user := range *userACcount {
-			msg += fmt.Sprintf("\t%d位: <@%s> (AC count: %d(%d))\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
+			msg += fmt.Sprintf("\t%d位: <@%s> AC count: %d(%d)\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
 			msg += fmt.Sprintf("\t%s\n", func() string {
 				if user.ACcount <= 30 {
 					return "は？"
@@ -108,7 +108,7 @@ func countAC(name string, since, until int64) (int, error) {
 	ok += 1
 	sum := 0
 	for _, sr := range (*srs)[ok:] {
-		if since <= sr.EpochSecond && sr.EpochSecond <= until {
+		if since <= sr.EpochSecond && sr.EpochSecond <= until && sr.Result == "AC" {
 			sum++
 		}
 	}
