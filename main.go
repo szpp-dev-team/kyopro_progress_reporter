@@ -117,6 +117,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	
 	if err := http.ListenAndServe("0.0.0.0:"+port, nil); err != nil {
 		log.Fatal(err)
 	}
