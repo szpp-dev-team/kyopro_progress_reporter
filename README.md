@@ -2,12 +2,6 @@
 みんなちゃんと競プロやってるかわかるようになります
 ![Screenshot from 2020-11-22 07-16-29](https://user-images.githubusercontent.com/43411965/99888824-dbd5c780-2c92-11eb-830d-183887db647c.jpg)
 
-
-# Requirements
-+ Go
-+ Heroku
-+ 
-
 # Test
 ## 1. .env にシークレットキーなど書き込む。
 S3 環境がなければ slack api で必要なものだけ記述して `members.json` をローカルに置けば ok  
