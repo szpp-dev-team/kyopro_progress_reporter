@@ -105,7 +105,7 @@ func countAC(name string, since, until int64) (int, error) {
 			ok = mid
 		}
 	}
-
+	ok += 1
 	sum := 0
 	for _, sr := range (*srs)[ok:] {
 		if since <= sr.EpochSecond && sr.EpochSecond <= until {
@@ -142,6 +142,7 @@ func countUniqueAC(name string, since, until int64) (int, error) {
 		}
 	}
 
+	ok += 1
 	sum := 0
 	for _, sr := range (*srs)[ok:] {
 		if since <= sr.EpochSecond && sr.EpochSecond <= until {
