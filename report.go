@@ -36,9 +36,9 @@ func reportSubmissions() error {
 		for rank, user := range *userACcount {
 			msg += fmt.Sprintf("\t%d位: <@%s> AC count: %d(%d)\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
 			msg += fmt.Sprintf("\t%s\n", func() string {
-				if user.ACcount <= 30 {
-					return "は？"
-				} else if 31 <= user.ACcount && user.ACcount < 40 {
+				if user.ACcount < 10 {
+					return "は？精進しろ"
+				} else if 10 <= user.ACcount && user.ACcount < 15 {
 					return "その調子っぴ！"
 				} else {
 					return "静大の誇りっぴ〜！"

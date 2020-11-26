@@ -18,7 +18,7 @@ import (
 var port string
 var api *slack.Client
 var members *[]Member
-var channelID = "G01FQK55DPA"
+var channelID = "C01E67SR0FP"
 
 func main() {
 	var err error
