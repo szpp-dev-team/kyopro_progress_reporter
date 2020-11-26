@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sort"
 )
 
 type SubmissionResult struct {
@@ -40,6 +41,30 @@ func GetSubmissionResult(userid string) (*[]SubmissionResult, error) {
 	}
 
 	return &submissionResult, nil
+}
+
+func GetUniqueAC(userid string) (*[]SubmissionResult, error) {
+	submissionResult, err := GetSubmissionResult(userid)
+	if err != nil {
+		return nil, err
+	}
+
+	sort.Slice(*submissionResult, func(i, j int) bool {
+		return (*submissionResult)[i].ID < (*submissionResult)[j].ID
+	})
+
+	ACMap := map[string]bool{}
+	UniqueACs := []SubmissionResult{}
+	for _, elm := range *submissionResult {
+		if elm.Result != "AC" || ACMap[elm.ProblemID] {
+			continue
+		}
+
+		UniqueACs = append(UniqueACs, elm)
+		ACMap[elm.ProblemID] = true
+	}
+
+	return &UniqueACs, nil
 }
 
 var SubmissionResultAtTimeURL = "https://kenkoooo.com/atcoder/atcoder-api/v3/from/%d"

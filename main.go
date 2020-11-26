@@ -114,6 +114,9 @@ func main() {
 
 	log.Println("[INFO] Server listening...")
 	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	if err := http.ListenAndServe("0.0.0.0:"+port, nil); err != nil {
 		log.Fatal(err)
 	}
