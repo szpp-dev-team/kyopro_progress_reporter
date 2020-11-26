@@ -51,7 +51,7 @@ func reportSubmissions() error {
 			log.Println(err)
 		}
 
-		time.Sleep(time.Hour)
+		time.Sleep(time.Hour * 24)
 		since += 86400
 		until += 86400
 	}
