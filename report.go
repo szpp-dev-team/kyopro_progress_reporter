@@ -20,7 +20,7 @@ type UserACcount struct {
 // var Homekotoba = []string{"静大の誇りっぴ〜！", "その調子っぴ！", "もうすこし頑張るっぴ！", "課題をするな競技プログラミングをしろ"}
 
 func reportSubmissions() error {
-	since := int64(1606057200) // 2020-11-16(Mon) 00:00:00
+	since := int64(1606662000) // 2020-11-16(Mon) 00:00:00
 	until := since + 604800
 
 	for {
