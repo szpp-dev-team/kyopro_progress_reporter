@@ -16,10 +16,10 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
-var port string
+var port string = "8080"
 var api *slack.Client
 var members *[]Member
-var channelID = "C01E67SR0FP"
+var channelID string
 
 func main() {
 	var err error
@@ -32,6 +32,7 @@ func main() {
 	if err := util.DownloadFile("members.json"); err != nil {
 		log.Fatal(err)
 	}
+	channelID = os.Getenv("CHANNEL_ID")
 	members, err = NewMemberFromJSON()
 	if err != nil {
 		log.Fatal(err)
@@ -41,6 +42,7 @@ func main() {
 	}
 
 	http.HandleFunc("/report", func(w http.ResponseWriter, r *http.Request) {
+		// 月曜日じゃなかったらなにもしない(クソコードだけど仕方なかった)
 		if time.Now().Weekday() != time.Monday {
 			return
 		}
@@ -117,13 +119,11 @@ func main() {
 	})
 
 	log.Println("[INFO] Server listening...")
-	port = os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
 	}
 
 	if err := http.ListenAndServe("0.0.0.0:"+port, nil); err != nil {
 		log.Fatal(err)
 	}
-
 }
