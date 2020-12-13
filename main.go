@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
 	"github.com/joho/godotenv"
@@ -39,14 +40,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	go func() {
+	http.HandleFunc("/report", func(w http.ResponseWriter, r *http.Request) {
+		if time.Now().Weekday() != time.Monday {
+			return
+		}
 		if err := reportSubmissions(); err != nil {
+			log.Println(err)
 			if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
 				log.Println(err)
 			}
-			log.Fatal(err)
 		}
-	}()
+	})
 
 	http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)

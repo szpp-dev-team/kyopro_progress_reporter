@@ -20,41 +20,39 @@ type UserACcount struct {
 // var Homekotoba = []string{"静大の誇りっぴ〜！", "その調子っぴ！", "もうすこし頑張るっぴ！", "課題をするな競技プログラミングをしろ"}
 
 func reportSubmissions() error {
-	since := int64(1606662000) // 2020-11-16(Mon) 00:00:00
-	until := since + 604800
+	oneWeekSecond := int64(604800)
 
-	for {
-		userACcount, err := generateRanking(since, until)
-		if err != nil {
-			log.Println(err)
-		}
+	since := time.Now().Unix() - oneWeekSecond
+	until := time.Now().Unix()
 
-		sinceDay := time.Unix(since, 0).Format("01/02(Mon)")
-		untilDay := time.Unix(until, 0).Format("01/02(Mon)")
-
-		msg := fmt.Sprintf("%s ~ %s にかけての AC 数ランキングを発表するっぴ！\n\n", sinceDay, untilDay)
-		for rank, user := range *userACcount {
-			msg += fmt.Sprintf("\t%d位: <@%s> AC count: %d(%d)\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
-			msg += fmt.Sprintf("\t%s\n", func() string {
-				if user.ACcount < 10 {
-					return "は？精進しろ"
-				} else if 10 <= user.ACcount && user.ACcount < 15 {
-					return "その調子っぴ！"
-				} else {
-					return "静大の誇りっぴ〜！"
-				}
-			}())
-			msg += "\n"
-		}
-
-		if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(msg, false)); err != nil {
-			log.Println(err)
-		}
-
-		time.Sleep(24 * time.Hour * 7)
-		since = until
-		until += 604800
+	userACcount, err := generateRanking(since, until)
+	if err != nil {
+		log.Println(err)
 	}
+
+	sinceDay := time.Unix(since, 0).Format("01/02(Mon)")
+	untilDay := time.Unix(until, 0).Format("01/02(Mon)")
+
+	msg := fmt.Sprintf("%s ~ %s にかけての AC 数ランキングを発表するっぴ！\n\n", sinceDay, untilDay)
+	for rank, user := range *userACcount {
+		msg += fmt.Sprintf("\t%d位: <@%s> AC count: %d(%d)\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
+		msg += fmt.Sprintf("\t%s\n", func() string {
+			if user.ACcount < 10 {
+				return "は？精進しろ"
+			} else if 10 <= user.ACcount && user.ACcount < 15 {
+				return "その調子っぴ！"
+			} else {
+				return "静大の誇りっぴ〜！"
+			}
+		}())
+		msg += "\n"
+	}
+
+	if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(msg, false)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func generateRanking(since, until int64) (*[]UserACcount, error) {
