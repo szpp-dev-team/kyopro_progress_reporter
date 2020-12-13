@@ -14,7 +14,7 @@ S3 環境がなければ slack api で必要なものだけ記述して `members
 
 ## 2. 起動する
 ```console
-$ go run main.go member.go report.go slacklib.go
+$ go run main.go member.go report.go
 ```
 
 ## 3. http リクエストをとばす

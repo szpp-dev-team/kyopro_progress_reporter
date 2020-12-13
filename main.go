@@ -33,11 +33,14 @@ func main() {
 		log.Fatal(err)
 	}
 	channelID = os.Getenv("CHANNEL_ID")
+	if channelID == "" {
+		log.Fatal("CHANNEL_ID must be set")
+	}
 	members, err = NewMemberFromJSON()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ConvertIdToName(); err != nil {
+	if err := util.ConvertIdToName(api); err != nil {
 		log.Fatal(err)
 	}
 

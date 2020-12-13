@@ -1,9 +1,11 @@
-package main
+package util
+
+import "github.com/slack-go/slack"
 
 // slack id -> slack name
 var SlackIdNameMap map[string]string = map[string]string{}
 
-func ConvertIdToName() error {
+func ConvertIdToName(api *slack.Client) error {
 	list, err := api.GetUsers()
 	if err != nil {
 		return err
