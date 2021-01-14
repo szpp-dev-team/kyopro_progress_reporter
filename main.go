@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
 	"github.com/joho/godotenv"
@@ -16,7 +15,7 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
-var port string = "8080"
+var port string = "8090"
 var api *slack.Client
 var members *[]Member
 var channelID string
@@ -45,10 +44,7 @@ func main() {
 	}
 
 	http.HandleFunc("/report", func(w http.ResponseWriter, r *http.Request) {
-		// 月曜日じゃなかったらなにもしない(クソコードだけど仕方なかった)
-		if time.Now().Weekday() != time.Monday {
-			return
-		}
+		log.Println("start reporting")
 		if err := reportSubmissions(); err != nil {
 			log.Println(err)
 			if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
