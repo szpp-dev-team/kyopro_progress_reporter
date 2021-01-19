@@ -2,8 +2,8 @@
     {
         "slack_id": "",
         "atcoder_id": "",
-        "cafecoder_id": "",
-        "twitter_id": ""
+        "cafecoder_id": "任意",
+        "twitter_id": "任意"
     }
   
 ]

@@ -59,6 +59,7 @@ func generateRanking(since, until int64) (*[]UserACcount, error) {
 	list := []UserACcount{}
 
 	for _, user := range *members {
+		log.Println("Getting " + user.AtCoderID + "'s record...")
 		ACcount, err := countAC(user.AtCoderID, since, until)
 		if err != nil {
 			return nil, err

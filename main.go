@@ -28,12 +28,14 @@ func main() {
 	}
 
 	api = slack.New(os.Getenv("SLACK_BOT_TOKEN"))
-	if err := util.DownloadFile("members.json"); err != nil {
-		log.Fatal(err)
-	}
 	channelID = os.Getenv("CHANNEL_ID")
 	if channelID == "" {
 		log.Fatal("CHANNEL_ID must be set")
+	}
+	if !util.Exists("members.json") {
+		if err := util.DownloadFile("members.json"); err != nil {
+			log.Fatal(err)
+		}
 	}
 	members, err = NewMemberFromJSON()
 	if err != nil {

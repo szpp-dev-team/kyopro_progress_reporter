@@ -10,16 +10,16 @@
 # Test
 ## 1. .env にシークレットキーなど書き込む。
 S3 環境がなければ slack api で必要なものだけ記述して `members.json` をローカルに置けば ok  
-`PORT` はわからなければ `8080` で ok
+`PORT` はわからなければ `8090` で ok
 
 ## 2. 起動する
 ```console
-$ go run main.go member.go report.go
+$ go run main.go .
 ```
 
 ## 3. http リクエストをとばす
 ```console
-$ curl localhost:8080/report
+$ curl localhost:8090/report
 ```
 
 ## 4. 〜完〜
