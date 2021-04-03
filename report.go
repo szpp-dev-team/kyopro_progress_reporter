@@ -154,9 +154,10 @@ func SinceUntilDate() (time.Time, time.Time) {
 	now := time.Now()
 
 	sundayYear := now.Year()
-	sundayMonth := calcMonth(now.Month(), -1)
+	sundayMonth := now.Month()
 	sunday := now.Day() - int(now.Weekday())
 	if sunday < 1 {
+		sundayMonth = calcMonth(now.Month(), -1)
 		if now.Month() == time.January {
 			sundayYear--
 		}
@@ -164,9 +165,10 @@ func SinceUntilDate() (time.Time, time.Time) {
 	}
 
 	saturdayYear := now.Year()
-	saturdayMonth := calcMonth(now.Month(), 1)
+	saturdayMonth := now.Month()
 	saturday := now.Day() + 6 - int(now.Weekday())
 	if getDaysOfMonth(now.Year(), now.Month()) < saturday {
+		saturdayMonth = calcMonth(now.Month(), 1)
 		if now.Month() == time.December {
 			saturdayYear++
 		}
