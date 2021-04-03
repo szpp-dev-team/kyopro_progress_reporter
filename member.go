@@ -3,19 +3,25 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
 )
 
 type Member struct {
-	SlackID     string `json:"slack_id"`
-	AtCoderID   string `json:"atcoder_id"`
-	CafeCoderID string `json:"cafecoder_id"`
-	TwitterID   string `json:"twitter_id"`
+	SlackID   string `json:"slack_id"`
+	AtCoderID string `json:"atcoder_id"`
+	TwitterID string `json:"twitter_id"`
 }
 
 func NewMemberFromJSON() (*[]Member, error) {
+	if !util.Exists("members.json") {
+		if err := util.DownloadFile("members.json"); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	b, err := ioutil.ReadFile("members.json")
 	if err != nil {
 		return nil, err

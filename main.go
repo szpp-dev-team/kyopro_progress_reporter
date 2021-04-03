@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/earlgray283/kyopro_progress_reporter/util"
 	"github.com/joho/godotenv"
@@ -32,11 +33,7 @@ func main() {
 	if channelID == "" {
 		log.Fatal("CHANNEL_ID must be set")
 	}
-	if !util.Exists("members.json") {
-		if err := util.DownloadFile("members.json"); err != nil {
-			log.Fatal(err)
-		}
-	}
+
 	members, err = NewMemberFromJSON()
 	if err != nil {
 		log.Fatal(err)
@@ -45,15 +42,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/report", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("start reporting")
+	go func() {
+		ticker := time.NewTicker(time.Hour)
+
 		if err := reportSubmissions(); err != nil {
 			log.Println(err)
 			if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
 				log.Println(err)
 			}
 		}
-	})
+
+		select {
+		case <-ticker.C:
+			if err := reportSubmissions(); err != nil {
+				log.Println(err)
+				if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
+					log.Println(err)
+				}
+			}
+		}
+	}()
 
 	http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
