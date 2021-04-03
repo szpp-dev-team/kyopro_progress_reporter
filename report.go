@@ -20,18 +20,15 @@ type UserACcount struct {
 // var Homekotoba = []string{"静大の誇りっぴ〜！", "その調子っぴ！", "もうすこし頑張るっぴ！", "課題をするな競技プログラミングをしろ"}
 
 func reportSubmissions() error {
-	oneWeekSecond := int64(604800)
+	since, until := SinceUntilDate()
 
-	since := time.Now().Unix() - oneWeekSecond
-	until := time.Now().Unix()
-
-	userACcount, err := generateRanking(since, until)
+	userACcount, err := generateRanking(since.UnixNano(), until.UnixNano())
 	if err != nil {
 		log.Println(err)
 	}
 
-	sinceDay := time.Unix(since, 0).Format("01/02(Mon)")
-	untilDay := time.Unix(until, 0).Format("01/02(Mon)")
+	sinceDay := since.Format("01/02(Mon)")
+	untilDay := until.Format("01/02(Mon)")
 
 	msg := fmt.Sprintf("%s ~ %s にかけての AC 数ランキングを発表するっぴ！\n\n", sinceDay, untilDay)
 	for rank, user := range *userACcount {
@@ -150,4 +147,53 @@ func countUniqueAC(name string, since, until int64) (int, error) {
 	}
 
 	return sum, nil
+}
+
+// 日曜日と土曜日の unixtime を返す
+func SinceUntilDate() (time.Time, time.Time) {
+	now := time.Now()
+
+	sundayYear := now.Year()
+	sundayMonth := calcMonth(now.Month(), -1)
+	sunday := now.Day() - int(now.Weekday())
+	if sunday < 1 {
+		if now.Month() == time.January {
+			sundayYear--
+		}
+		sunday += getDaysOfMonth(sundayYear, sundayMonth)
+	}
+
+	saturdayYear := now.Year()
+	saturdayMonth := calcMonth(now.Month(), 1)
+	saturday := now.Day() + 6 - int(now.Weekday())
+	if getDaysOfMonth(now.Year(), now.Month()) < saturday {
+		if now.Month() == time.December {
+			saturdayYear++
+		}
+		saturday -= getDaysOfMonth(saturdayYear, saturdayMonth)
+	}
+
+	sundayTime := time.Date(sundayYear, sundayMonth, sunday, 0, 0, 0, 0, time.Local)
+	saturdayTime := time.Date(saturdayYear, saturdayMonth, saturday, 0, 0, 0, 0, time.Local)
+
+	return sundayTime, saturdayTime
+}
+
+func getDaysOfMonth(year int, month time.Month) int {
+	firstOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+
+	return int(lastOfMonth.Sub(firstOfMonth).Hours() / 24.0)
+}
+
+func calcMonth(currentMonth time.Month, x int) time.Month {
+	if int(currentMonth)+x < 1 {
+		return time.Month(int(currentMonth) - x%12)
+	}
+
+	if 12 < int(currentMonth)+x {
+		return time.Month(int(currentMonth) - x%12)
+	}
+
+	return time.Month(int(currentMonth) + x)
 }
