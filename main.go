@@ -51,13 +51,14 @@ func main() {
 				log.Println(err)
 			}
 		}
-
-		select {
-		case <-ticker.C:
-			if err := reportSubmissions(); err != nil {
-				log.Println(err)
-				if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
+		for {
+			select {
+			case <-ticker.C:
+				if err := reportSubmissions(); err != nil {
 					log.Println(err)
+					if _, _, err := api.PostMessage(channelID, slack.MsgOptionText(fmt.Sprintf("エラーが起きたっピ！朗読するっピ！\n%s", err.Error()), false)); err != nil {
+						log.Println(err)
+					}
 				}
 			}
 		}
