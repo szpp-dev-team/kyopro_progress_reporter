@@ -17,12 +17,10 @@ type UserACcount struct {
 	UniqueACcount int
 }
 
-// var Homekotoba = []string{"静大の誇りっぴ〜！", "その調子っぴ！", "もうすこし頑張るっぴ！", "課題をするな競技プログラミングをしろ"}
-
 func reportSubmissions() error {
-	since, until := SinceUntilDate()
+	since, until := SinceUntilDate(time.Unix(time.Now().Unix()-int64(time.Hour/time.Second)*24*7, 0))
 
-	userACcount, err := generateRanking(since.UnixNano(), until.UnixNano())
+	userACcount, err := generateRanking(since.Unix(), until.Unix())
 	if err != nil {
 		log.Println(err)
 	}
@@ -34,9 +32,9 @@ func reportSubmissions() error {
 	for rank, user := range *userACcount {
 		msg += fmt.Sprintf("\t%d位: <@%s> AC count: %d(%d)\n", rank+1, user.member.SlackID, user.ACcount, user.UniqueACcount)
 		msg += fmt.Sprintf("\t%s\n", func() string {
-			if user.ACcount < 10 {
+			if user.ACcount < 5 {
 				return "は？精進しろ"
-			} else if 10 <= user.ACcount && user.ACcount < 15 {
+			} else if 5 <= user.ACcount && user.ACcount < 15 {
 				return "その調子っぴ！"
 			} else {
 				return "静大の誇りっぴ〜！"
@@ -91,10 +89,6 @@ func countAC(name string, since, until int64) (int, error) {
 	ng := int64(len((*srs)))
 	for math.Abs(float64(ok-ng)) > 1 {
 		mid := (ok + ng) / 2
-		if (*srs)[mid].EpochSecond == since {
-			ok = mid
-			break
-		}
 		if (*srs)[mid].EpochSecond > since {
 			ng = mid
 		} else {
@@ -149,9 +143,9 @@ func countUniqueAC(name string, since, until int64) (int, error) {
 	return sum, nil
 }
 
-// 日曜日と土曜日の unixtime を返す
-func SinceUntilDate() (time.Time, time.Time) {
-	now := time.Now()
+// currentDate の週の日曜日と土曜日の unixtime を返す
+func SinceUntilDate(currentDate time.Time) (time.Time, time.Time) {
+	now := currentDate
 
 	sundayYear := now.Year()
 	sundayMonth := now.Month()
@@ -172,7 +166,7 @@ func SinceUntilDate() (time.Time, time.Time) {
 		if now.Month() == time.December {
 			saturdayYear++
 		}
-		saturday -= getDaysOfMonth(saturdayYear, saturdayMonth)
+		saturday -= getDaysOfMonth(now.Year(), now.Month()) - 1
 	}
 
 	sundayTime := time.Date(sundayYear, sundayMonth, sunday, 0, 0, 0, 0, time.Local)
